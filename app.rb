@@ -1,14 +1,25 @@
-require "sinatra"
-require "warden"
-require "omniauth-twitter"
+require 'sinatra'
+require 'warden'
+require 'omniauth-twitter'
+require 'sinatra/activerecord'
+require_relative 'config/environments'
+require_relative 'models'
 
 enable :sessions
 
+# Warden::Manager.serialize_into_session do |user|
+#   user
+# end
+# Warden::Manager.serialize_from_session do |user|
+#   user
+# end
+
 Warden::Manager.serialize_into_session do |user|
-  user
+  user.id
 end
-Warden::Manager.serialize_from_session do |user|
-  user
+
+Warden::Manager.serialize_from_session do |id|
+  User.find_by_id(id)
 end
 
 use Warden::Manager do |config|
@@ -36,7 +47,7 @@ get "/" do
 end
 
 get "/warden/callback" do
-  erb :home
+  erb :home if env["warden"].authenticated?
 end
 
 get "/logout" do
@@ -50,7 +61,20 @@ end
 
 
 get "/auth/twitter/callback" do
-  warden.set_user env['omniauth.auth']['uid']
+  auth = env['omniauth.auth']
+  user = User.where( uid: auth['uid'], auth_provider: auth['provider']).first_or_initialize
+  name = nil
+  if auth['info']['name'].present?
+    name = auth['info']['name']
+  else
+    if auth['info']['first_name'].present?
+      name = auth['info']['first_name']
+      name += " #{auth['info']['last_name']}" if auth['info']['last_name'].present?
+    end
+  end
+  user.attributes = {uid: auth['uid'], name: name, auth_provider: auth['provider']}
+  user.save!
+  warden.set_user user
   redirect "/warden/callback"
 end
 
@@ -72,5 +96,5 @@ __END__
 @@home
 <h1>Wellcome</h1>
 <pre>
-    <%= current_user %>
+    <%= current_user.name %>
 </pre>
