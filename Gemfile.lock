@@ -23,9 +23,6 @@ GEM
     tilt (2.0.5)
     warden (1.2.6)
       rack (>= 1.0)
-    warden_omniauth (0.1.0)
-      omniauth
-      warden (>= 0.9)
 
 PLATFORMS
   ruby
@@ -34,7 +31,6 @@ DEPENDENCIES
   omniauth-twitter
   sinatra
   warden
-  warden_omniauth
 
 BUNDLED WITH
    1.12.5

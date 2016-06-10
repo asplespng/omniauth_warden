@@ -1,9 +1,6 @@
-# coding: utf-8
 require "sinatra"
 require "warden"
-require "omniauth"
 require "omniauth-twitter"
-# require "warden_omniauth"
 
 enable :sessions
 
@@ -21,12 +18,8 @@ use Warden::Manager do |config|
 end
 
 use OmniAuth::Builder do
-  provider :twitter, "api key", "secret"
+  provider :twitter, ENV['TWITTER_OMNIAUTH'], ENV['TWITTER_OMNIAUTH_SECRET']
 end
-
-# use WardenOmniAuth do |config|
-#   config.redirect_after_callback = "/warden/callback"
-# end
 
 helpers do
   def warden
@@ -74,7 +67,7 @@ __END__
 </html>
 
 @@index
-<a href="/auth/twitter">Twitter でログイン</a>
+<a href="/auth/twitter">Twitter</a>
 
 @@home
 <h1>Wellcome</h1>
