@@ -7,13 +7,6 @@ require_relative 'models'
 
 enable :sessions
 
-# Warden::Manager.serialize_into_session do |user|
-#   user
-# end
-# Warden::Manager.serialize_from_session do |user|
-#   user
-# end
-
 Warden::Manager.serialize_into_session do |user|
   user.id
 end
@@ -34,7 +27,7 @@ end
 
 helpers do
   def warden
-    request.env["warden"]
+    env["warden"]
   end
 
   def current_user
@@ -47,11 +40,11 @@ get "/" do
 end
 
 get "/warden/callback" do
-  erb :home if env["warden"].authenticated?
+  erb :home if warden.authenticated?
 end
 
 get "/logout" do
-  request.env["warden"].logout
+  warden.logout
   redirect "/"
 end
 
@@ -60,7 +53,7 @@ get "/auth/failure" do
 end
 
 
-get "/auth/twitter/callback" do
+get "/auth/*/callback" do
   auth = env['omniauth.auth']
   user = User.where( uid: auth['uid'], auth_provider: auth['provider']).first_or_initialize
   name = nil
