@@ -2,3 +2,8 @@ development:
   adapter: postgresql
   encoding: unicode
   database: omniauth_warden_dev
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: omniauth_warden_test
