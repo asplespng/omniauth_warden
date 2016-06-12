@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe 'App' do
-  include Rack::Test::Methods
+  before :each do
+  end
 
-  # def app
-  #   Sinatra::Application
-  # end
-  # Capybara.app = Sinatra::Application.new
-
-  it "includes twitter", type: :feature do
+  it "signs in with twitter", type: :feature, js: true do
     visit '/'
     expect(page).to have_content 'Twitter'
+
     click_link "Twitter"
+    save_screenshot '1.png'
+
+    expect(page).to have_content("Test User")
   end
 end
