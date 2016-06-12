@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe 'App' do
   before :each do
+    OmniAuth.config.mock_auth[:twitter] = nil
+    OmniAuth.config.add_mock(:twitter,
+                             { uid: '12345',
+                               provider: 'twitter',
+                               info: { name: "Test User" }
+                             })
   end
 
   it "signs in with twitter", type: :feature, js: true do

@@ -43,14 +43,9 @@ Capybara.configure do |c|
 end
 
 Capybara::Webkit.configure do |config|
-  # config.block_unknown_urls
+  config.block_unknown_urls
 end
 
 OmniAuth.configure do |c|
   c.test_mode = true
-  OmniAuth.config.add_mock(:twitter,
-                           { uid: '12345',
-                             provider: 'twitter',
-                             info: { name: "Test User" }
-                           })
 end
